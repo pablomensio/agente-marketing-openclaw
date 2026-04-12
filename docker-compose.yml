@@ -1,0 +1,38 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend:/app
+      # Create a named volume for the sqlite DB to persist even if ./backend is mounted
+      - backend_data:/app/data
+      - .env:/app/.env
+    env_file:
+      - .env
+    environment:
+      - DATABASE_URL=sqlite:////app/data/marketing_hub.db
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+      - /app/.next
+    environment:
+      - NEXT_PUBLIC_API_URL=http://localhost:8000
+    restart: unless-stopped
+    depends_on:
+      - backend
+
+volumes:
+  backend_data:
