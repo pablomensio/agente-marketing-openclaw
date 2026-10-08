@@ -1,0 +1,268 @@
+<title>Importadoras Centro Córdoba</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Source+Sans+3:wght@400;600&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: plano de cuadras a la izquierda, ficha de comercios a la derecha; se apilan en celular */
+:root{
+  --bg:#f3f1ec; --paper:#fbfaf7; --ink:#1e2226; --muted:#646a70; --line:#dcd8cf; --grid:#e6e2d8;
+  --imp:#c27a12; --cex:#1f7a74; --auto:#b5402f; --land:#7a6f9c; --focus:#1e2226;
+  --display:"Bricolage Grotesque",ui-sans-serif,system-ui,sans-serif;
+  --body:"Source Sans 3",ui-sans-serif,system-ui,sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#16191c; --paper:#1d2124; --ink:#ecebe6; --muted:#9aa0a5; --line:#30363b; --grid:#252a2e;
+  --imp:#e3a43f; --cex:#4fb8ae; --auto:#e2735f; --land:#a99ccf; --focus:#ecebe6; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#16191c; --paper:#1d2124; --ink:#ecebe6; --muted:#9aa0a5; --line:#30363b; --grid:#252a2e;
+  --imp:#e3a43f; --cex:#4fb8ae; --auto:#e2735f; --land:#a99ccf; --focus:#ecebe6; color-scheme:dark}
+html,body{height:100%}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.45;padding-inline:16px;padding-block:20px 28px;box-sizing:border-box}
+*{box-sizing:border-box}
+.wrap{max-width:1240px;margin:0 auto;display:grid;gap:16px}
+header{display:grid;gap:6px}
+h1{font-family:var(--display);font-weight:800;font-size:clamp(26px,4vw,38px);line-height:1.05;margin:0;text-wrap:balance;letter-spacing:-.01em}
+.sub{color:var(--muted);max-width:70ch;margin:0}
+.meta{font-family:var(--mono);font-size:12px;color:var(--muted);letter-spacing:.02em}
+.controls{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.chip{font:600 13px var(--body);border:1px solid var(--line);background:var(--paper);color:var(--ink);border-radius:999px;padding:6px 12px;display:inline-flex;gap:8px;align-items:center;cursor:pointer}
+.chip[aria-pressed="false"]{opacity:.5}
+.chip .dot{width:10px;height:10px;border-radius:50%}
+.chip .n{font-family:var(--mono);font-size:12px;color:var(--muted)}
+.chip:focus-visible,button:focus-visible,input:focus-visible,a:focus-visible,.item:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+#q{font:14px var(--body);padding:7px 12px;border:1px solid var(--line);background:var(--paper);color:var(--ink);border-radius:8px;min-width:0;flex:1 1 200px;max-width:320px}
+.main{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);gap:16px;align-items:start}
+@media (max-width:860px){.main{grid-template-columns:minmax(0,1fr)}}
+.mapbox{position:relative;background:var(--paper);border:1px solid var(--line);border-radius:10px;overflow:hidden;aspect-ratio:1/1;max-width:100%;touch-action:none}
+svg{display:block;width:100%;height:100%;cursor:grab;user-select:none}
+svg.drag{cursor:grabbing}
+.zoom{position:absolute;right:10px;top:10px;display:grid;gap:4px}
+.zoom button{width:34px;height:34px;border:1px solid var(--line);background:var(--paper);color:var(--ink);border-radius:6px;font:600 18px var(--mono);cursor:pointer}
+.legend{position:absolute;left:10px;bottom:10px;background:var(--paper);border:1px solid var(--line);border-radius:6px;padding:6px 8px;font:11px var(--mono);color:var(--muted);display:grid;gap:4px}
+.scale{display:flex;align-items:center;gap:6px}
+.scale i{display:block;height:6px;border:1.5px solid var(--muted);border-top:0}
+.card{position:absolute;left:10px;top:10px;right:56px;max-width:340px;background:var(--paper);border:1px solid var(--line);border-radius:8px;padding:10px 12px;box-shadow:0 6px 20px rgba(0,0,0,.12);display:grid;gap:4px}
+.card h3{margin:0;font:700 16px var(--display)}
+.card .x{position:absolute;right:6px;top:4px;border:0;background:none;color:var(--muted);font-size:18px;cursor:pointer}
+.list{background:var(--paper);border:1px solid var(--line);border-radius:10px;max-height:min(78vh,760px);overflow:auto}
+.group h2{position:sticky;top:0;background:var(--paper);margin:0;padding:10px 14px 6px;font:600 11px var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--line);display:flex;justify-content:space-between}
+.item{display:grid;grid-template-columns:12px minmax(0,1fr);gap:10px;padding:10px 14px;border-bottom:1px solid var(--line);cursor:pointer}
+.item:hover{background:var(--bg)}
+.item.sel{background:var(--bg);box-shadow:inset 3px 0 0 var(--ink)}
+.item .dot{width:12px;height:12px;border-radius:50%;margin-top:4px}
+.item b{font-weight:600}
+.row{display:flex;flex-wrap:wrap;gap:4px 12px;font-size:13px;color:var(--muted)}
+.row .num{font-family:var(--mono);font-size:12px;font-variant-numeric:tabular-nums}
+.links{display:flex;flex-wrap:wrap;gap:4px 12px;font-size:13px}
+a{color:var(--ink);text-underline-offset:2px}
+.tel{font-family:var(--mono);font-size:12px;user-select:all}
+.empty{padding:20px 14px;color:var(--muted)}
+.note{font-size:13px;color:var(--muted);max-width:90ch;margin:0}
+.lbl{font:600 10px var(--mono);fill:var(--land);letter-spacing:.04em}
+.zone{font:600 10px var(--mono);fill:var(--muted);letter-spacing:.06em}
+@media (prefers-reduced-motion:no-preference){.pin{transition:r .15s}}
+</style>
+
+<div class="wrap">
+  <header>
+    <span class="meta">CÓRDOBA CAPITAL · CENTRO, GÜEMES, GENERAL PAZ, ALBERDI · RELEVADO 8 OCT 2026</span>
+    <h1>Importadoras del centro de Córdoba</h1>
+    <p class="sub">Importadores directos, mayoristas de productos importados y estudios de comercio exterior que figuran en Google Maps dentro del casco céntrico. Tocá un punto o un nombre para ver la ficha.</p>
+  </header>
+
+  <div class="controls" id="chips">
+    <input id="q" type="search" placeholder="Buscar por nombre o calle" aria-label="Buscar por nombre o calle">
+  </div>
+
+  <div class="main">
+    <div class="mapbox" id="mapbox">
+      <svg id="map" role="img" aria-label="Plano del centro de Córdoba con importadoras"></svg>
+      <div class="zoom"><button id="zin" aria-label="Acercar">+</button><button id="zout" aria-label="Alejar">−</button><button id="zreset" aria-label="Ver todo" style="font-size:13px">⤢</button></div>
+      <div class="legend"><div class="scale"><i id="sbar"></i><span id="slab">300 m · 3 cuadras</span></div><span>Grilla = cuadras de 100 m</span></div>
+      <div class="card" id="card" hidden></div>
+    </div>
+    <div class="list" id="list"></div>
+  </div>
+
+  <p class="note">Fuente: Google Maps (búsquedas "importadora", "importadora de autos" e "importadora de vehículos"). Se descartaron 11 resultados que no son importadoras (supermercados, bebidas, celulares, estética). En la zona no aparecen importadoras de autos; solo una casa de repuestos importados. Los puntos de referencia en violeta son aproximados. El plano no trae calles: usá "Ver en Google Maps" para llegar.</p>
+</div>
+
+<script>
+const RAW = [["Mega Import", "imp", "Mayorista", "Buenos Aires 330 Loc 4", "Centro", -31.4201036, -64.1844916, "+54 351 423-1583", "https://www.mega-import.com/", 4.1, 35, "ChIJ2dIi3ISiMpQR3PPdKRQpuPQ"], ["PARA Importadora", "imp", "Mayorista", "Rivadavia 433", "Centro", -31.4114454, -64.1807011, "+54 351 300-0597", "http://www.paramayorista.com/", 4.8, 61, "ChIJqSUymJ2iMpQRBGlJD3WQYPE"], ["PARA ROJO Importaciones", "imp", "Importador", "Catamarca 166", "Centro", -31.4117772, -64.1802761, "+54 351 202-9097", "http://pararojomayorista.ar/", 4.8, 77, "ChIJibvZrUWjMpQRW4XixpPlRg4"], ["Mayorista Encanto Importaciones", "imp", "Mayorista", "Buenos Aires 371", "Centro", -31.4207589, -64.1844024, "+54 351 202-2985", "https://encantoimportaciones.com/", 4.8, 25, "ChIJTUSR1hmjMpQR6WM7xiiaMZQ"], ["Importador directo Julieta", "imp", "Tienda de regalos", "Av. Leandro N. Alem 210", "Talleres Oeste", -31.3988329, -64.1707347, "", "https://pedix.app/julia-importador", 3.7, 823, "ChIJmQouqfmZMpQRmgvAPi1xmaY"], ["Importadora Eduardo Arnold", "imp", "Importadora", "Av. Leandro N. Alem 210", "Talleres Oeste", -31.3986, -64.17045, "", "", null, null, "ChIJEbEXIQCZMpQRQdwVcQnL0qU"], ["Todo Importado", "imp", "Artículos para el hogar", "Fructuoso Rivera 320", "Güemes", -31.4252036, -64.1929547, "+54 351 460-3016", "", 3.8, 13, "ChIJ6e2AYYiiMpQRoGiUBvKmtDg"], ["El Gran Arcón S.A.", "imp", "Comercio", "Buenos Aires 372", "Centro", -31.4205849, -64.1845477, "+54 351 505-4811", "", 4.7, 18, "ChIJsw8VIIWiMpQRjB6slYiEOXo"], ["Importadora Julia", "imp", "Centro comercial", "Terminal de Ómnibus", "Centro", -31.422778, -64.175278, "+54 351 258-9631", "", 3.7, 10, "ChIJk3YrL3CjMpQRFQVViiw9J2U"], ["Morgan Mayorista", "imp", "Mayorista", "Buenos Aires 320", "Centro", -31.4199697, -64.1843639, "+54 351 244-3060", "", 5, 8, "ChIJjZ-T24SiMpQRmtPFX41_wAk"], ["VYSE Importaciones", "imp", "Electrónica", "Santa Rosa 320", "Centro", -31.4112255, -64.1870166, "+54 351 383-5671", "https://www.vyse.com.ar/", 4.5, 26, "ChIJpz5RodeZMpQREachEytH3QU"], ["El Ají de todo importado", "imp", "Ferretería", "La Rioja 338", "Centro", -31.4099332, -64.1866318, "+54 351 682-6931", "", 4.8, 5, "ChIJxQONA3mYMpQRXqZwWLKukJA"], ["Juniors Mayorista", "imp", "Accesorios de moda", "Pje. Carlos Morel 315", "Centro", -31.4203618, -64.1838613, "+54 351 740-0581", "https://www.juniorsmayorista.com.ar/", 5, 34, "ChIJm3TH14SiMpQR-0ln2nS4_Kg"], ["On The Go Accesorios", "imp", "Mayorista", "Tucumán 394", "Centro", -31.4102082, -64.1860999, "+54 9 351 618-7873", "https://onthego.com.ar/", 4.9, 7, "ChIJW4-csVeZMpQRbzkuaNqZ6ss"], ["Popeye Mayorista", "imp", "Juguetería y librería", "Buenos Aires 370", "Centro", -31.4204887, -64.184578, "+54 351 428-8530", "http://www.popeyemayorista.com.ar/", 4.1, 213, "ChIJeedi34SiMpQRNJtCjl8n2jQ"], ["Franco Bijou", "imp", "Accesorios de moda", "Corrientes 61 Loc 5", "Centro", -31.4195595, -64.184648, "+54 351 557-7239", "https://francobijou.mitiendanube.com/", 4.9, 239, "ChIJoWbKw4SiMpQRNRN2jBRmMlc"], ["Bijou", "imp", "Joyería mayorista", "Corrientes 79", "Centro", -31.4196381, -64.1845013, "+54 351 424-0865", "", 4.2, 149, "ChIJvTRI24SiMpQRj9CM1MRmc7U"], ["Chi-Sian Regalería (importador directo)", "imp", "Tienda de regalos", "Domingo F. Sarmiento 143", "Centro", -31.4106787, -64.1795222, "+54 3548 48-3036", "", 5, 1, "ChIJ5xSjOnaYMpQRGmUkxA594Io"], ["Importadora Victoria", "imp", "Electrónica", "Av. Emilio Olmos 351", "Centro", -31.4149568, -64.1783872, "", "", null, null, "ChIJCaLtWwCjMpQR3tzKDUwQ0pE"], ["Gafas Importadas MDC", "imp", "Accesorios de moda", "Ovidio Lagos 514", "General Paz", -31.4119119, -64.1730791, "+54 351 563-9838", "https://gafasimportadas.com.ar/", 5, 47, "ChIJc1YCwaqjMpQRldE6lgVly_s"], ["Attme Regalos", "imp", "Tienda de regalos", "Pje. Emilio Huespe 130", "Centro", -31.4202255, -64.184207, "+54 351 421-1807", "https://attmeregalos.com/", 4.2, 419, "ChIJZw-5nm-YMpQR3bKS_IjMP2U"], ["Córdoba Mayorista", "imp", "Mayorista textil", "25 de Mayo 219", "Centro", -31.4156693, -64.1806238, "+54 351 592-8924", "http://cordobamayorista.com/", 4.7, 65, "ChIJ8yiPiCyjMpQRMQnXY3DRzbY"], ["Nuovo Shop Mayorista", "imp", "Centro comercial", "Av. Gral. Ortiz de Ocampo 280", "General Paz", -31.4148599, -64.1733884, "", "", 3.7, 3, "ChIJuyQOCACjMpQRs5NFzwy_ets"], ["Insumos Guti", "imp", "Accesorios para celulares", "Rivera Indarte 311", "Centro", -31.4119948, -64.1838815, "+54 351 448-8431", "http://insumosguti.com/", 4.8, 67, "ChIJHZsm-XeYMpQR8eP1tp75Efs"], ["Complet Technology Import", "imp", "Importación y exportación", "Av. Marcelo T. de Alvear 748", "Güemes", -31.423221, -64.1934644, "+54 9 351 623-2991", "https://completimport.com/", 1, 1, "ChIJr6NkVKSdMpQR3Z8iYevUJMc"], ["Japón Motors", "auto", "Repuestos para autos", "Nicolás Avellaneda 690", "Alto Alberdi", -31.4047157, -64.1933337, "+54 351 809-3519", "http://www.japonmotors.com/", 4.5, 186, "ChIJIRF5OH2YMpQRL21sWo5Wv-w"], ["Custom Agent", "cex", "Importación y exportación", "Rivadavia 194 3°A", "Centro", -31.4143014, -64.1817095, "+54 351 235-6599", "http://customagent.com.ar/", 5, 19, "ChIJGRNppXajMpQRKgYibI8Tqvw"], ["DAGRI Comercio Internacional", "cex", "Asesor en comercio internacional", "San Jerónimo 275", "Centro", -31.4180542, -64.1808344, "+54 351 568-9842", "http://www.dagri.com.ar/", 5, 1, "ChIJdZpacpuiMpQRr3SLkPuXyBw"], ["PCS Argentina Comercio Exterior", "cex", "Importación y exportación", "Ituzaingó 87, 1° A", "Centro", -31.4177122, -64.1816948, "+54 351 589-4880", "https://pcsargentina.com.ar/", 4.6, 15, "ChIJNamVmHaYMpQRK9Ae6U0hZ-I"], ["Grupo Aduanar", "cex", "Asesor en comercio internacional", "27 de Abril 351, Piso 4 Of. A", "Centro", -31.4159599, -64.1892781, "+54 351 668-5009", "http://aduanar.com/", 4, 72, "ChIJYZ6uUy-ZMpQRUAjcLgXOWF4"], ["Serena Comercio Exterior", "cex", "Asesor en comercio internacional", "Ituzaingó 270", "Centro", -31.4200436, -64.1832322, "+54 351 421-7009", "http://www.serena.com.ar/", null, null, "ChIJoQBUKZuiMpQRqBubaLuGrdY"], ["Manner Comercio Exterior", "cex", "Oficinas de empresa", "Centro (dirección en Google desactualizada)", "Centro", -31.416664, -64.1800755, "+54 351 422-3006", "http://www.mannerhq.com/", null, null, "ChIJbQ4yfJyiMpQRyhsqljxCFDY"]];
+const CATS = {
+  imp:{label:"Importadores y mayoristas", color:"--imp"},
+  cex:{label:"Comercio exterior / despachantes", color:"--cex"},
+  auto:{label:"Automotor", color:"--auto"}
+};
+const P = RAW.map((r,i)=>({id:i,name:r[0],cat:r[1],type:r[2],addr:r[3],barrio:r[4],lat:r[5],lng:r[6],tel:r[7],web:r[8],score:r[9],reviews:r[10],pid:r[11]}));
+const LANDMARKS = [
+  ["Plaza San Martín",-31.4167,-64.1839],
+  ["Patio Olmos",-31.4232,-64.1876],
+  ["Terminal de Ómnibus",-31.4236,-64.1745],
+  ["Plaza España",-31.4286,-64.1808]
+];
+const ZONES = [["CALLE BUENOS AIRES · MAYORISTAS",-31.4214,-64.1832]];
+
+// projection: metres from a reference point
+const LAT0=-31.414, LNG0=-64.182, MLAT=110950, MLNG=111320*Math.cos(LAT0*Math.PI/180);
+const proj=(lat,lng)=>[(lng-LNG0)*MLNG,(LAT0-lat)*MLAT];
+
+const css=n=>getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const svg=document.getElementById('map'), NS='http://www.w3.org/2000/svg';
+const el=(t,a)=>{const e=document.createElementNS(NS,t);for(const k in a)e.setAttribute(k,a[k]);return e};
+
+const pts=P.map(p=>proj(p.lat,p.lng));
+const xs=pts.map(p=>p[0]), ys=pts.map(p=>p[1]);
+const PAD=250;
+const FULL={x:Math.min(...xs)-PAD,y:Math.min(...ys)-PAD,w:0,h:0};
+FULL.w=Math.max(...xs)+PAD-FULL.x; FULL.h=Math.max(...ys)+PAD-FULL.y;
+const s=Math.max(FULL.w,FULL.h); FULL.x-= (s-FULL.w)/2; FULL.y-=(s-FULL.h)/2; FULL.w=FULL.h=s;
+let vb={...FULL};
+
+const gGrid=el('g',{}), gLand=el('g',{}), gPins=el('g',{});
+svg.append(gGrid,gLand,gPins);
+
+function drawGrid(){
+  gGrid.replaceChildren();
+  const x0=Math.floor((FULL.x-2000)/100)*100, y0=Math.floor((FULL.y-2000)/100)*100;
+  const x1=FULL.x+FULL.w+2000, y1=FULL.y+FULL.h+2000;
+  for(let x=x0;x<=x1;x+=100) gGrid.append(el('line',{x1:x,y1:y0,x2:x,y2:y1,stroke:'var(--grid)','stroke-width':x%500===0?2.2:1,'vector-effect':'non-scaling-stroke'}));
+  for(let y=y0;y<=y1;y+=100) gGrid.append(el('line',{x1:x0,y1:y,x2:x1,y2:y,stroke:'var(--grid)','stroke-width':y%500===0?2.2:1,'vector-effect':'non-scaling-stroke'}));
+}
+let active=new Set(Object.keys(CATS)), query='', selected=null;
+
+function visible(p){
+  if(!active.has(p.cat)) return false;
+  if(!query) return true;
+  const q=query.toLowerCase();
+  return (p.name+' '+p.addr+' '+p.type+' '+p.barrio).toLowerCase().includes(q);
+}
+
+function render(){
+  const z=FULL.w/vb.w;
+  svg.setAttribute('viewBox',`${vb.x} ${vb.y} ${vb.w} ${vb.h}`);
+  const unit=vb.w/ (svg.clientWidth||600); // metres per css px
+  gLand.replaceChildren();
+  for(const [n,la,ln] of LANDMARKS){
+    const [x,y]=proj(la,ln);
+    gLand.append(el('rect',{x:x-5*unit,y:y-5*unit,width:10*unit,height:10*unit,fill:'none',stroke:'var(--land)','stroke-width':1.5,'vector-effect':'non-scaling-stroke',transform:`rotate(45 ${x} ${y})`}));
+    const t=el('text',{x:x+9*unit,y:y+4*unit,class:'lbl','font-size':10*unit}); t.textContent=n.toUpperCase(); gLand.append(t);
+  }
+  for(const [n,la,ln] of ZONES){
+    const [x,y]=proj(la,ln);
+    const t=el('text',{x,y,class:'zone','font-size':9.5*unit,'text-anchor':'middle'}); t.textContent=n; gLand.append(t);
+  }
+  gPins.replaceChildren();
+  const order=[...P].sort((a,b)=>(a.id===selected)-(b.id===selected));
+  for(const p of order){
+    if(!visible(p)) continue;
+    const [x,y]=proj(p.lat,p.lng), sel=p.id===selected;
+    const c=el('circle',{cx:x,cy:y,r:(sel?9:6.5)*unit,fill:`var(${CATS[p.cat].color})`,stroke:sel?'var(--ink)':'var(--paper)','stroke-width':sel?2.5:1.5,'vector-effect':'non-scaling-stroke',class:'pin',tabindex:0,role:'button','aria-label':p.name});
+    c.style.cursor='pointer';
+    const tt=el('title',{}); tt.textContent=p.name; c.append(tt);
+    c.addEventListener('click',e=>{e.stopPropagation();select(p.id,false)});
+    c.addEventListener('keydown',e=>{if(e.key==='Enter')select(p.id,false)});
+    gPins.append(c);
+    if(z>=2.2 || sel){
+      const t=el('text',{x:x+10*unit,y:y+4*unit,'font-size':(sel?12:10.5)*unit,fill:'var(--ink)','font-family':'var(--body)','font-weight':sel?700:600,'paint-order':'stroke',stroke:'var(--paper)','stroke-width':3,'stroke-linejoin':'round','vector-effect':'non-scaling-stroke'});
+      t.textContent=p.name; t.style.pointerEvents='none'; gPins.append(t);
+    }
+  }
+  // scale bar: 300 m
+  const pxPer300=300/unit;
+  const sb=document.getElementById('sbar');
+  if(pxPer300>160){sb.style.width=(100/unit)+'px';document.getElementById('slab').textContent='100 m · 1 cuadra'}
+  else {sb.style.width=pxPer300+'px';document.getElementById('slab').textContent='300 m · 3 cuadras'}
+}
+
+function fmtScore(p){return p.score==null?'Sin reseñas':`★ ${p.score.toFixed(1)} · ${p.reviews} reseñas`}
+const gmaps=p=>`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(p.name)}&query_place_id=${p.pid}`;
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+function links(p){
+  return `<div class="links"><a href="${gmaps(p)}" target="_blank" rel="noopener">Ver en Google Maps</a>${p.web?`<a href="${esc(p.web)}" target="_blank" rel="noopener">Sitio web</a>`:''}${p.tel?`<span class="tel">${esc(p.tel)}</span>`:''}</div>`;
+}
+
+function renderList(){
+  const list=document.getElementById('list'); list.replaceChildren();
+  let total=0;
+  for(const k of Object.keys(CATS)){
+    const items=P.filter(p=>p.cat===k&&visible(p)).sort((a,b)=>a.name.localeCompare(b.name,'es'));
+    if(!items.length) continue; total+=items.length;
+    const g=document.createElement('section'); g.className='group';
+    g.innerHTML=`<h2><span>${CATS[k].label}</span><span>${items.length}</span></h2>`;
+    for(const p of items){
+      const d=document.createElement('div'); d.className='item'+(p.id===selected?' sel':''); d.tabIndex=0; d.dataset.id=p.id;
+      d.innerHTML=`<span class="dot" style="background:var(${CATS[p.cat].color})"></span><div style="display:grid;gap:3px;min-width:0"><b>${esc(p.name)}</b><div class="row"><span>${esc(p.addr)}</span><span>${esc(p.barrio)}</span></div><div class="row"><span>${esc(p.type)}</span><span class="num">${fmtScore(p)}</span></div>${p.id===selected?links(p):''}</div>`;
+      d.addEventListener('click',e=>{if(e.target.closest('a,.tel'))return;select(p.id,true)});
+      d.addEventListener('keydown',e=>{if(e.key==='Enter')select(p.id,true)});
+      g.append(d);
+    }
+    list.append(g);
+  }
+  if(!total) list.innerHTML='<div class="empty">Ningún comercio coincide con la búsqueda. Probá con otra calle o activá más categorías.</div>';
+}
+
+function showCard(){
+  const card=document.getElementById('card');
+  const p=P.find(p=>p.id===selected);
+  if(!p){card.hidden=true;return}
+  card.hidden=false;
+  card.innerHTML=`<button class="x" aria-label="Cerrar ficha">×</button><span class="meta" style="color:var(${CATS[p.cat].color})">${CATS[p.cat].label.toUpperCase()}</span><h3>${esc(p.name)}</h3><div class="row"><span>${esc(p.addr)}, ${esc(p.barrio)}</span></div><div class="row"><span>${esc(p.type)}</span><span class="num">${fmtScore(p)}</span></div>${links(p)}`;
+  card.querySelector('.x').onclick=()=>select(null);
+}
+
+function select(id,fromList){
+  selected=(selected===id)?null:id;
+  if(selected!=null && fromList){
+    const p=P[selected]; const [x,y]=proj(p.lat,p.lng);
+    const w=Math.min(vb.w,FULL.w/2.6);
+    vb={x:x-w/2,y:y-w/2,w,h:w};
+  }
+  render(); renderList(); showCard();
+  if(selected!=null && fromList && window.innerWidth<860) document.getElementById('mapbox').scrollIntoView({block:'start',behavior:'smooth'});
+  if(selected!=null && !fromList){
+    const it=document.querySelector(`.item[data-id="${selected}"]`); it&&it.scrollIntoView({block:'nearest',behavior:'smooth'});
+  }
+}
+
+// chips
+const chips=document.getElementById('chips');
+for(const k of Object.keys(CATS)){
+  const b=document.createElement('button'); b.className='chip'; b.id='chip-'+k; b.setAttribute('aria-pressed','true');
+  b.innerHTML=`<span class="dot" style="background:var(${CATS[k].color})"></span>${CATS[k].label}<span class="n">${P.filter(p=>p.cat===k).length}</span>`;
+  b.onclick=()=>{active.has(k)?active.delete(k):active.add(k);b.setAttribute('aria-pressed',active.has(k));render();renderList()};
+  chips.insertBefore(b,document.getElementById('q'));
+}
+document.getElementById('q').addEventListener('input',e=>{query=e.target.value.trim();render();renderList()});
+
+// zoom & pan
+function zoomAt(f,cx,cy){
+  const nw=Math.min(FULL.w*1.5,Math.max(FULL.w/12,vb.w/f));
+  const k=nw/vb.w;
+  if(cx==null){cx=vb.x+vb.w/2;cy=vb.y+vb.h/2}
+  vb={x:cx-(cx-vb.x)*k,y:cy-(cy-vb.y)*k,w:nw,h:nw}; render();
+}
+const toWorld=(e)=>{const r=svg.getBoundingClientRect();return[vb.x+(e.clientX-r.left)/r.width*vb.w,vb.y+(e.clientY-r.top)/r.height*vb.h]};
+document.getElementById('zin').onclick=()=>zoomAt(1.6);
+document.getElementById('zout').onclick=()=>zoomAt(1/1.6);
+document.getElementById('zreset').onclick=()=>{vb={...FULL};render()};
+svg.addEventListener('wheel',e=>{e.preventDefault();const[x,y]=toWorld(e);zoomAt(e.deltaY<0?1.25:0.8,x,y)},{passive:false});
+const ptrs=new Map(); let last=null, pinch=null, moved=false;
+svg.addEventListener('pointerdown',e=>{ptrs.set(e.pointerId,e);moved=false;last={x:e.clientX,y:e.clientY};svg.classList.add('drag');
+  if(ptrs.size===2){const [a,b]=[...ptrs.values()];pinch=Math.hypot(a.clientX-b.clientX,a.clientY-b.clientY)}});
+svg.addEventListener('pointermove',e=>{
+  if(!ptrs.has(e.pointerId))return; ptrs.set(e.pointerId,e);
+  const r=svg.getBoundingClientRect();
+  if(ptrs.size===2&&pinch){const [a,b]=[...ptrs.values()];const d=Math.hypot(a.clientX-b.clientX,a.clientY-b.clientY);
+    const mid={clientX:(a.clientX+b.clientX)/2,clientY:(a.clientY+b.clientY)/2};const[x,y]=toWorld(mid);zoomAt(d/pinch,x,y);pinch=d;moved=true;return}
+  const dx=e.clientX-last.x, dy=e.clientY-last.y; if(Math.abs(dx)+Math.abs(dy)>2&&!moved){moved=true;try{svg.setPointerCapture(e.pointerId)}catch(_){}}
+  vb.x-=dx/r.width*vb.w; vb.y-=dy/r.height*vb.h; last={x:e.clientX,y:e.clientY}; render();
+});
+const up=e=>{ptrs.delete(e.pointerId);if(ptrs.size<2)pinch=null;if(!ptrs.size)svg.classList.remove('drag');
+  if(ptrs.size===1){const o=[...ptrs.values()][0];last={x:o.clientX,y:o.clientY}}};
+svg.addEventListener('pointerup',up); svg.addEventListener('pointercancel',up);
+svg.addEventListener('click',e=>{if(!moved&&e.target===svg&&selected!=null)select(null)});
+window.addEventListener('resize',render);
+
+drawGrid(); render(); renderList();
+</script>
